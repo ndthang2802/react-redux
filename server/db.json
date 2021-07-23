@@ -1,0 +1,15 @@
+{
+  "users": [
+    {
+      "email": "ndthang@gmail.com",
+      "password": "$2a$10$EAHZVh5qWI9uMUJSg.w23en3TEL7wupTv57j6oigsXbUK3YK2uhv6",
+      "id": 1
+    },
+    {
+      "email": "chicken@gmail.com",
+      "password": "$2a$10$xyjpSBIYMQi3KSX5QmZXuu0DoPXLZaitXmWXLJKEnXcjEWJu81jJ.",
+      "fullname": "Alexander Chicken",
+      "id": 2
+    }
+  ]
+}
