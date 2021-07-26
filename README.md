@@ -7,6 +7,10 @@ cd server
 
 npm install
 
+json-server db.json -m ./node_modules/json-server-auth -r routes.json --port 5000
+```
+- Then
+```
 cd todosapp
 
 npm install
