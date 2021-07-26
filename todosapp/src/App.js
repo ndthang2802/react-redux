@@ -11,16 +11,16 @@ function App() {
   const [renderHomePage,setRenderHomePage] = useState(false)
 
   useEffect(()=>{
-    if(isLoggedIn) setRenderHomePage(true)
+    // get User from local storage
+    if (isLoggedIn) { 
+      setRenderHomePage(true)
+    }
   },[])
 
   return (
+    <Router>
     <div className="App">
-      <Router>
       {
-        // isLoggedIn ? 
-        // <Main /> :
-        //<Authentication />
         renderHomePage ? <Redirect to='/dashboard' /> : <Redirect to='/auth' /> 
       }
       <Switch>
@@ -31,8 +31,8 @@ function App() {
             <Authentication />
           </Route>
         </Switch>
-      </Router>
     </div>
+    </Router>
   );
 }
 

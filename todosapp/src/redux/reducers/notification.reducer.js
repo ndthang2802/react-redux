@@ -1,4 +1,4 @@
-import { LOGIN_SUCCESS,LOGIN_FAIL,REGISTER_SUCCESS, STOP_NOTIFICATION } from "../action/types"
+import { LOGIN_SUCCESS,LOGIN_FAIL,REGISTER_SUCCESS, STOP_NOTIFICATION, ADD_TODO_SUCCESS, ADD_TODO_FAIL } from "../action/types"
 
 const initialState = {
     message : '',
@@ -25,7 +25,21 @@ export const NotificationReducer = (state = initialState, action) => {
                 type    : 'success'
             }
         case STOP_NOTIFICATION :
-            return state
+            return {
+                ...state,
+                message : '',
+                type : ''
+            }
+        case ADD_TODO_SUCCESS   :
+            return {
+                message : 'New todo added',
+                type    : 'success'
+            }
+        case ADD_TODO_FAIL   :
+                return {
+                    message : 'Error, please try again',
+                    type    : 'warning'
+                }
         default:
             return state
     }

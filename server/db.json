@@ -6,10 +6,14 @@
       "id": 1
     },
     {
+      "0": "buy milk",
       "email": "chicken@gmail.com",
-      "password": "$2a$10$xyjpSBIYMQi3KSX5QmZXuu0DoPXLZaitXmWXLJKEnXcjEWJu81jJ.",
-      "fullname": "Alexander Chicken",
-      "id": 2
+      "password": "$2a$10$6Q5HN9qm0GTt2b4L3cIV3ODyvd5q9Ei9giat3mUchS.A/hNdlSBB2",
+      "todolist": [
+        "buy milk"
+      ],
+      "id": 2,
+      "donelist": []
     }
   ]
 }

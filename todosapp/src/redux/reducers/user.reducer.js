@@ -12,19 +12,19 @@ export const UserReducer = (state = initialState, action ) => {
                 return {
                     ...state,
                     isLoggedIn : true,
-                    user : payload.user,
+                    user : payload,
                     login_success : true
                 }
             case LOGIN_FAIL:
                 return {
                     ...state,
-                    error : payload
+                    isLoggedIn : false
                 }
             case REGISTER_SUCCESS :
                 return {
                     ...state,
                     isLoggedIn: true,
-                    user : payload.user,
+                    user : payload,
                     register_success : true
                 }
             case REGISTER_ERROR : 
