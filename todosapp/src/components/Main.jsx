@@ -1,9 +1,12 @@
 import React,{ useState,useEffect } from 'react'
 import { Alert, Button, Col, Container, Form, InputGroup, ListGroup, OverlayTrigger, Row, Toast, Tooltip } from 'react-bootstrap'
 import { useSelector,useDispatch } from 'react-redux'
-import { BsTrashFill,BsCheck,BsPencil,BsListCheck } from 'react-icons/bs'
-import { AddTodo } from '../redux/action/todo'
+import { BsTrashFill,BsCheck,BsPencil } from 'react-icons/bs'
+import { AddTodo, LoadTodo, DeleteTodo, MarkCompleted } from '../redux/action/todo'
 import { STOP_NOTIFICATION } from '../redux/action/types'
+import { v4 as uuidv4 } from 'uuid'
+import { Redirect } from 'react-router-dom'
+
 export default function Main() {
 
     const dispatch = useDispatch()
@@ -11,10 +14,14 @@ export default function Main() {
     const { message, type } = useSelector(state => state.Notification)
     const { todolist, donelist } = useSelector(state => state.Todo)
 
-    const [todo, setTodo] = useState()
+    const [todo, setTodo] = useState('')
     const [notification, setNotificationShow] = useState(false)
     const [listJob,setListJob] = useState([])
 
+    useEffect(()=>{
+        if (isLoggedIn)
+            dispatch(LoadTodo(user))
+    },[])
     useEffect(() => {
         setListJob(todolist)
     }, [todolist])
@@ -25,10 +32,37 @@ export default function Main() {
 
         var newTodo = todolist.slice()  
         
-        newTodo.push(todo)
+        var todo_item = {
+            id : uuidv4(),
+            title : todo,
+            done  : false
+        }
 
+        newTodo.push(todo_item)
+
+        setTodo('')
 
         dispatch(AddTodo({ todolist : newTodo },user))
+        
+    }
+
+    const DeleteTodoFromList = (jobId) => {
+
+        var newTodo = todolist.filter(todo => todo.id !== jobId)
+        
+        dispatch(DeleteTodo({ todolist : newTodo },user))
+    }
+
+    const MarkTodoCompleted = (jobId) => {
+
+        var newTodo = todolist.slice()  
+        
+        var item_index = newTodo.findIndex(todo=>todo.id === jobId)
+        
+        newTodo[item_index].done = true
+
+        dispatch(MarkCompleted({ todolist : newTodo },user))
+
         
     }
 
@@ -48,19 +82,22 @@ export default function Main() {
     const onTodoChange = (e) => {
         setTodo(e.target.value)
     }
+
+    if ( ! isLoggedIn) {
+        return <Redirect to='auth'/>
+    }
     return (
         <div className='d-flex align-items-center justify-content-center min-vh-100 min-vw-100' >
            <Container className='border p-3 rounded w-75'>
                <Row>
                     <Col md='9'>
                     <Row className = 'p-2'>
-                   <Col><h3>{message}</h3></Col>
                    <Col>{user.user.fullname}</Col>
                </Row>
                <Row className='p-2'>
                    <Col md={10}>
                         <InputGroup hasValidation>
-                            <Form.Control type='text' placeholder='todo' name='todo' required onChange={onTodoChange} />
+                            <Form.Control type='text' placeholder='todo' name='todo' value={todo} required onChange={onTodoChange} />
                         </InputGroup>
                    </Col>
                    <Col md={2} className='d-flex align-items-center justify-content-center'>
@@ -75,7 +112,11 @@ export default function Main() {
                                listJob.map((job,idx)=> (
                                     <ListGroup.Item action variant='info' key={idx} className='my-1'>
                                         <Row style={{ fontSize : '1.5rem', lineHeight:'1.5rem' }}>
-                                            <Col md={9}>{job}</Col>
+                                            {
+                                            job.done ?    
+                                                <Col md={9} className='text-decoration-line-through' >{job.title}</Col>
+                                            :   <Col md={9}>{job.title}</Col>
+                                            } 
                                             <Col md={1}>
                                                     <OverlayTrigger
                                                         placement='bottom'
@@ -85,7 +126,7 @@ export default function Main() {
                                                             </Tooltip>
                                                         }
                                                         >
-                                                        <BsTrashFill />
+                                                        <BsTrashFill onClick={()=>DeleteTodoFromList(job.id)} />
                                                     </OverlayTrigger>
                                             </Col>
                                             <Col md={1}>
@@ -104,12 +145,12 @@ export default function Main() {
                                                     <OverlayTrigger
                                                         placement='bottom'
                                                         overlay={
-                                                            <Tooltip id={`completed-${idx}`}>
+                                                            <Tooltip id={`completed-${idx}`} >
                                                                 Marked as completed
                                                             </Tooltip>
                                                         }
                                                         >
-                                                        <BsCheck />
+                                                        <BsCheck onClick={()=>MarkTodoCompleted(job.id)} />
                                                     </OverlayTrigger>
                                             </Col>
                                         </Row>
@@ -118,7 +159,7 @@ export default function Main() {
                             }
                        </ListGroup>
                         :
-                        <Alert variant='danger' >Nothing to do </Alert>
+                        <Alert variant='warning' >Nothing to do </Alert>
                    }
                </Row>
                <Row className='p-2'>
@@ -128,13 +169,8 @@ export default function Main() {
                </Row>
                     </Col>
                     <Col md={3}>
-                        <Toast className="d-inline-block m-1 bg-success" bg={type} show ={notification}>
-                            <Toast.Header closeButton={false}>
-                            <BsListCheck style={{ fontSize: '1.5rem' }} />
-                            <strong className="me-auto mx-2">Notification</strong>
-                            
-                            </Toast.Header>
-                            <Toast.Body className={type === 'dark' && 'text-white'} style={{ backgroundColor : 'hsla(0,0%,100%,.5)' }} >
+                        <Toast className={`d-inline-block m-1 bg-${type}`}  show ={notification}>
+                            <Toast.Body className={type === 'dark' && 'text-white'} style={{ backgroundColor : 'hsla(0,0%,100%,.8)' }} >
                                 {message}
                             </Toast.Body>
                         </Toast>

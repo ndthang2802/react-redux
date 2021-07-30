@@ -1,4 +1,4 @@
-import { ADD_TODO_FAIL, ADD_TODO_SUCCESS, LOAD_TODO_FAIL, LOAD_TODO_SUCCESS } from "../action/types"
+import { ADD_TODO_FAIL, ADD_TODO_SUCCESS, LOAD_TODO_FAIL, LOAD_TODO_SUCCESS, DELETE_TODO_SUCCESS, DELETE_TODO_FAIL, MARKDONE_TODO_SUCCESS, MARKDONE_TODO_FAIL } from "../action/types"
 
 const initialState = {
     todolist : [],
@@ -26,6 +26,24 @@ export const TodoReducer = (state = initialState, action ) => {
                     donelist : payload.donelist
                 }
             case LOAD_TODO_FAIL : 
+                return {
+                    ...state,
+                }
+            case DELETE_TODO_SUCCESS :
+                return {
+                    ...state,
+                    todolist : payload.todolist,
+                }
+            case DELETE_TODO_FAIL : 
+                return {
+                    ...state,
+                }
+            case MARKDONE_TODO_SUCCESS :
+                return {
+                    ...state,
+                    todolist : payload.todolist,
+                }
+            case MARKDONE_TODO_FAIL : 
                 return {
                     ...state,
                 }

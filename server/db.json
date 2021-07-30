@@ -6,14 +6,27 @@
       "id": 1
     },
     {
-      "0": "buy milk",
+      "fullname": "alexander",
       "email": "chicken@gmail.com",
       "password": "$2a$10$6Q5HN9qm0GTt2b4L3cIV3ODyvd5q9Ei9giat3mUchS.A/hNdlSBB2",
       "todolist": [
-        "buy milk"
+        {
+          "id": "29c6a41a-ab5d-4681-95c2-350938ec1e2d",
+          "title": "kill chicken",
+          "done": true
+        },
+        {
+          "id": "dbd59f9a-cbe8-48a7-a2ee-d7a6b3d9f53d",
+          "title": "buy milk",
+          "done": true
+        },
+        {
+          "id": "3d3a2dee-3254-4122-8225-f400cba5943d",
+          "title": "play football",
+          "done": true
+        }
       ],
-      "id": 2,
-      "donelist": []
+      "id": 2
     }
   ]
 }
