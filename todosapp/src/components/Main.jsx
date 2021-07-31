@@ -1,12 +1,12 @@
-import React,{ useState,useEffect } from 'react'
+import React,{ useState,useEffect ,useRef} from 'react'
 import { Alert, Button, Col, Container, Form, InputGroup, ListGroup, OverlayTrigger, Row, Toast, Tooltip } from 'react-bootstrap'
 import { useSelector,useDispatch } from 'react-redux'
 import { BsTrashFill,BsCheck,BsPencil } from 'react-icons/bs'
 import { AddTodo, LoadTodo, DeleteTodo, MarkCompleted } from '../redux/action/todo'
-import { STOP_NOTIFICATION } from '../redux/action/types'
+import { STOP_NOTIFICATION,EMPTY_DELETE_WARNING, EMPTY_ADD_WARNING } from '../redux/action/types'
 import { v4 as uuidv4 } from 'uuid'
 import { Redirect } from 'react-router-dom'
-
+import TodoItem from './TodoItem' 
 export default function Main() {
 
     const dispatch = useDispatch()
@@ -17,6 +17,8 @@ export default function Main() {
     const [todo, setTodo] = useState('')
     const [notification, setNotificationShow] = useState(false)
     const [listJob,setListJob] = useState([])
+
+    const listTodoRef = useRef([])
 
     useEffect(()=>{
         if (isLoggedIn)
@@ -30,19 +32,26 @@ export default function Main() {
     const AddTodoToList = (e) => {
         e.preventDefault()
 
-        var newTodo = todolist.slice()  
-        
-        var todo_item = {
-            id : uuidv4(),
-            title : todo,
-            done  : false
+        if (todo === ''){
+            dispatch({ type: EMPTY_ADD_WARNING })
         }
 
-        newTodo.push(todo_item)
+        else {
 
-        setTodo('')
-
-        dispatch(AddTodo({ todolist : newTodo },user))
+            var newTodo = todolist.slice()  
+            
+            var todo_item = {
+                id : uuidv4(),
+                title : todo,
+                done  : false
+            }
+    
+            newTodo.push(todo_item)
+    
+            setTodo('')
+    
+            dispatch(AddTodo({ todolist : newTodo },user))
+        }
         
     }
 
@@ -66,6 +75,35 @@ export default function Main() {
         
     }
 
+    const clearAllFinishedTodo = () => {
+
+        if (todolist.length === 0) {
+            dispatch({type : EMPTY_DELETE_WARNING})
+        }
+        else {
+
+            var newTodo = todolist.filter(todo => todo.done === false )
+    
+            dispatch(DeleteTodo({ todolist : newTodo },user))
+
+        }
+    }
+
+    const clearAllTodo = () => {
+
+        if (todolist.length === 0) {
+            dispatch({type : EMPTY_DELETE_WARNING})
+        }
+
+        else {
+
+            var newTodo = []
+    
+            dispatch(DeleteTodo({ todolist : newTodo },user))
+        }
+
+    }
+
     useEffect(()=>{
         if (message) {
             setNotificationShow(true)
@@ -82,6 +120,19 @@ export default function Main() {
     const onTodoChange = (e) => {
         setTodo(e.target.value)
     }
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    const focusTest = () => {
+        console.log('focusing')
+    }
+
+    // EDIT
+
+    const OpenEdit = (idx) => {
+        console.log(listTodoRef.current[idx])
+    }
 
     if ( ! isLoggedIn) {
         return <Redirect to='auth'/>
@@ -92,7 +143,7 @@ export default function Main() {
                <Row>
                     <Col md='9'>
                     <Row className = 'p-2'>
-                   <Col>{user.user.fullname}</Col>
+                   <Col><b>{capitalizeFirstLetter(user.user.fullname)}</b></Col>
                </Row>
                <Row className='p-2'>
                    <Col md={10}>
@@ -109,53 +160,9 @@ export default function Main() {
                     listJob.length !== 0 ? 
                        <ListGroup>
                            {
-                               listJob.map((job,idx)=> (
-                                    <ListGroup.Item action variant='info' key={idx} className='my-1'>
-                                        <Row style={{ fontSize : '1.5rem', lineHeight:'1.5rem' }}>
-                                            {
-                                            job.done ?    
-                                                <Col md={9} className='text-decoration-line-through' >{job.title}</Col>
-                                            :   <Col md={9}>{job.title}</Col>
-                                            } 
-                                            <Col md={1}>
-                                                    <OverlayTrigger
-                                                        placement='bottom'
-                                                        overlay={
-                                                            <Tooltip id={`delete-${idx}`}>
-                                                                Delete
-                                                            </Tooltip>
-                                                        }
-                                                        >
-                                                        <BsTrashFill onClick={()=>DeleteTodoFromList(job.id)} />
-                                                    </OverlayTrigger>
-                                            </Col>
-                                            <Col md={1}>
-                                                    <OverlayTrigger
-                                                        placement='bottom'
-                                                        overlay={
-                                                            <Tooltip id={`edit-${idx}`}>
-                                                                Edit
-                                                            </Tooltip>
-                                                        }
-                                                        >
-                                                        <BsPencil />
-                                                    </OverlayTrigger>
-                                            </Col>
-                                            <Col md={1}>
-                                                    <OverlayTrigger
-                                                        placement='bottom'
-                                                        overlay={
-                                                            <Tooltip id={`completed-${idx}`} >
-                                                                Marked as completed
-                                                            </Tooltip>
-                                                        }
-                                                        >
-                                                        <BsCheck onClick={()=>MarkTodoCompleted(job.id)} />
-                                                    </OverlayTrigger>
-                                            </Col>
-                                        </Row>
-                                    </ListGroup.Item>
-                               ))
+                               listJob.map((job,idx)=> {
+                                   return < TodoItem key={idx} job = {job} idx = {idx} MarkTodoCompleted = {MarkTodoCompleted} DeleteTodoFromList = {DeleteTodoFromList} />
+                               })
                             }
                        </ListGroup>
                         :
@@ -164,7 +171,10 @@ export default function Main() {
                </Row>
                <Row className='p-2'>
                     <Col md={3}>
-                        <Button>Clear All</Button>
+                        <Button variant = 'danger' onClick={clearAllTodo} >Clear All</Button>
+                    </Col>
+                    <Col md={3}>
+                        <Button onClick = {clearAllFinishedTodo} >Clear finished</Button>
                     </Col>
                </Row>
                     </Col>

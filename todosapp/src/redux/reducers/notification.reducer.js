@@ -1,4 +1,6 @@
-import { LOGIN_SUCCESS,LOGIN_FAIL,REGISTER_SUCCESS, STOP_NOTIFICATION, ADD_TODO_SUCCESS, ADD_TODO_FAIL, DELETE_TODO_SUCCESS, DELETE_TODO_FAIL, MARKDONE_TODO_FAIL, MARKDONE_TODO_SUCCESS } from "../action/types"
+import { LOGIN_SUCCESS,LOGIN_FAIL,REGISTER_SUCCESS, STOP_NOTIFICATION, ADD_TODO_SUCCESS, ADD_TODO_FAIL,
+         DELETE_TODO_SUCCESS, DELETE_TODO_FAIL, MARKDONE_TODO_FAIL, MARKDONE_TODO_SUCCESS,EMPTY_DELETE_WARNING,
+         EMPTY_ADD_WARNING} from "../action/types"
 
 const initialState = {
     message : '',
@@ -42,7 +44,7 @@ export const NotificationReducer = (state = initialState, action) => {
                 }
         case DELETE_TODO_SUCCESS   :
             return {
-                message : 'A todo deleted',
+                message : 'Deleted',
                 type    : 'success'
             }
         case DELETE_TODO_FAIL   :
@@ -60,6 +62,18 @@ export const NotificationReducer = (state = initialState, action) => {
                     message : 'Item deleted error, please try again',
                     type    : 'warning'
                 }
+        case EMPTY_DELETE_WARNING   :
+            return {
+                message : 'Nothing to clear',
+                type    : 'warning'
+            }
+        case EMPTY_ADD_WARNING   :
+            return {
+                message : 'Please, enter a todo',
+                type    : 'warning'
+            }
+            
+                
         default:
             return state
     }

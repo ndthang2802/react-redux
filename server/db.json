@@ -11,19 +11,19 @@
       "password": "$2a$10$6Q5HN9qm0GTt2b4L3cIV3ODyvd5q9Ei9giat3mUchS.A/hNdlSBB2",
       "todolist": [
         {
-          "id": "29c6a41a-ab5d-4681-95c2-350938ec1e2d",
+          "id": "bcc0e865-c3e7-4fc5-b077-31138247349d",
           "title": "kill chicken",
-          "done": true
+          "done": false
         },
         {
-          "id": "dbd59f9a-cbe8-48a7-a2ee-d7a6b3d9f53d",
-          "title": "buy milk",
-          "done": true
+          "id": "21d6e98e-92f7-4c48-88cd-c465d7db5e54",
+          "title": "play soccer",
+          "done": false
         },
         {
-          "id": "3d3a2dee-3254-4122-8225-f400cba5943d",
-          "title": "play football",
-          "done": true
+          "id": "02e8196d-52d4-43fd-b538-ff5ea826cd0d",
+          "title": "sing",
+          "done": false
         }
       ],
       "id": 2
