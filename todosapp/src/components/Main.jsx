@@ -1,8 +1,7 @@
-import React,{ useState,useEffect ,useRef} from 'react'
-import { Alert, Button, Col, Container, Form, InputGroup, ListGroup, OverlayTrigger, Row, Toast, Tooltip } from 'react-bootstrap'
+import React,{ useState,useEffect } from 'react'
+import { Alert, Button, Col, Container, Form, InputGroup, ListGroup, Row, Toast } from 'react-bootstrap'
 import { useSelector,useDispatch } from 'react-redux'
-import { BsTrashFill,BsCheck,BsPencil } from 'react-icons/bs'
-import { AddTodo, LoadTodo, DeleteTodo, MarkCompleted } from '../redux/action/todo'
+import { AddTodo, LoadTodo, DeleteTodo } from '../redux/action/todo'
 import { STOP_NOTIFICATION,EMPTY_DELETE_WARNING, EMPTY_ADD_WARNING } from '../redux/action/types'
 import { v4 as uuidv4 } from 'uuid'
 import { Redirect } from 'react-router-dom'
@@ -12,18 +11,17 @@ export default function Main() {
     const dispatch = useDispatch()
     const { isLoggedIn, user } = useSelector(state => state.User)
     const { message, type } = useSelector(state => state.Notification)
-    const { todolist, donelist } = useSelector(state => state.Todo)
+    const { todolist } = useSelector(state => state.Todo)
 
     const [todo, setTodo] = useState('')
     const [notification, setNotificationShow] = useState(false)
     const [listJob,setListJob] = useState([])
 
-    const listTodoRef = useRef([])
-
     useEffect(()=>{
         if (isLoggedIn)
             dispatch(LoadTodo(user))
     },[])
+
     useEffect(() => {
         setListJob(todolist)
     }, [todolist])
@@ -52,26 +50,6 @@ export default function Main() {
     
             dispatch(AddTodo({ todolist : newTodo },user))
         }
-        
-    }
-
-    const DeleteTodoFromList = (jobId) => {
-
-        var newTodo = todolist.filter(todo => todo.id !== jobId)
-        
-        dispatch(DeleteTodo({ todolist : newTodo },user))
-    }
-
-    const MarkTodoCompleted = (jobId) => {
-
-        var newTodo = todolist.slice()  
-        
-        var item_index = newTodo.findIndex(todo=>todo.id === jobId)
-        
-        newTodo[item_index].done = true
-
-        dispatch(MarkCompleted({ todolist : newTodo },user))
-
         
     }
 
@@ -124,15 +102,6 @@ export default function Main() {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
-    const focusTest = () => {
-        console.log('focusing')
-    }
-
-    // EDIT
-
-    const OpenEdit = (idx) => {
-        console.log(listTodoRef.current[idx])
-    }
 
     if ( ! isLoggedIn) {
         return <Redirect to='auth'/>
@@ -161,7 +130,7 @@ export default function Main() {
                        <ListGroup>
                            {
                                listJob.map((job,idx)=> {
-                                   return < TodoItem key={idx} job = {job} idx = {idx} MarkTodoCompleted = {MarkTodoCompleted} DeleteTodoFromList = {DeleteTodoFromList} />
+                                   return < TodoItem key={idx} job = {job} idx = {idx} />
                                })
                             }
                        </ListGroup>

@@ -1,6 +1,6 @@
 import { LOGIN_SUCCESS,LOGIN_FAIL,REGISTER_SUCCESS, STOP_NOTIFICATION, ADD_TODO_SUCCESS, ADD_TODO_FAIL,
          DELETE_TODO_SUCCESS, DELETE_TODO_FAIL, MARKDONE_TODO_FAIL, MARKDONE_TODO_SUCCESS,EMPTY_DELETE_WARNING,
-         EMPTY_ADD_WARNING} from "../action/types"
+         EMPTY_ADD_WARNING, EDIT_TODO_FAIL, EDIT_TODO_SUCCESS } from "../action/types"
 
 const initialState = {
     message : '',
@@ -72,7 +72,16 @@ export const NotificationReducer = (state = initialState, action) => {
                 message : 'Please, enter a todo',
                 type    : 'warning'
             }
-            
+        case EDIT_TODO_SUCCESS   :
+            return {
+                message : 'Editted !',
+                type    : 'success'
+            }
+        case EDIT_TODO_FAIL   :
+                return {
+                    message : 'Edit error, please try again',
+                    type    : 'warning'
+                }
                 
         default:
             return state
